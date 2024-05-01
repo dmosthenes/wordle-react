@@ -14,7 +14,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: black;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -35,4 +35,60 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate3d(0,0,0, 0deg)
+  }
+  50% {
+    transform: rotate3d(1,0,0, 90deg);
+  }
+  100% {
+    transform: rotate3d(0,0,0, 0deg)
+  }
+}
+
+@keframes fade {
+  0% {
+    background-color: black
+  }
+  100% {
+    background-color: green
+
+  }
+}
+
+table {
+  width: 600px;
+  height: 600px;
+  padding: 10px;
+  border-collapse: separate;
+  border-spacing: 10px;
+  
+}
+
+.cell{
+  outline: 2px solid grey;
+  width: 114px;
+  height: 114px;
+  background-color: black; 
+  font-size: 90px;
+  font-weight: bold;
+}
+
+.complete_row {
+  animation: spin 2s linear ;
+}
+
+#correct {
+  transition: background-color 2s ease-in-out, outline 2s ease-in-out;
+  background-color: rgb(76, 163, 76);
+  outline: 2px solid rgb(76, 163, 76);
+}
+
+#place {
+  transition: background-color 2s ease-in-out, outline 2s ease-in-out;
+  background-color: rgb(204, 182, 76);
+  outline: 2px solid rgb(204, 182, 76);
 }
