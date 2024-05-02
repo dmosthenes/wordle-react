@@ -59,6 +59,39 @@
   }
 }
 
+@keyframes emerge {
+  0% {
+    opacity: 1
+  }
+  50% {
+    opacity: 1
+  }
+  100% {
+    opacity: 0
+  }
+}
+
+@keyframes remerge {
+  0% {
+    top: 200%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+  }
+  70% {
+    top: 200%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+  }
+  100% {
+    top: 25%;
+    left: 25%;
+    width: 50%;
+    height: 50%;
+  }
+}
+
 table {
   width: 600px;
   height: 600px;
@@ -75,6 +108,7 @@ table {
   background-color: black; 
   font-size: 90px;
   font-weight: bold;
+  user-select: none;
 }
 
 .complete_row {
@@ -91,4 +125,35 @@ table {
   transition: background-color 2s ease-in-out, outline 2s ease-in-out;
   background-color: rgb(204, 182, 76);
   outline: 2px solid rgb(204, 182, 76);
+}
+
+#black {
+  transition: background-color 2s ease-in-out, outline 2s ease-in-out;
+  background-color: rgb(44, 44, 40);
+  outline: 2px solid rgb(44, 44, 40);
+}
+
+#game-end {
+  animation: remerge 5s ease-in-out;
+  border-radius: 5%;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  background-color: black;
+  user-select: none;
+  cursor: pointer
+}
+
+#end {
+  animation: emerge 5s ease;
+  opacity: 0
+}
+
+#game-underway{
+  opacity: 0
 }
