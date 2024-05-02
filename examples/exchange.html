@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+        <title>Counter</title>
+    </head>
+
+    <style>
+
+        select {
+            padding: 10%;
+            margin: 10px
+        }
+
+
+    </style>
+
+
+    <body>
+        <div id="app"></div>
+        <script type="text/babel">
+
+            class Exchange extends React.Component {
+
+                constructor(props) {
+                    super(props);
+                    this.cached = {}
+                    this.currencies = ["AUD", "USD", "NZD", "CHF", "GBP", "CNY"]
+                    this.state = {
+                        base: "AUD",
+                        other: "USD",
+                        value: 0,
+                        converted: 0
+                    }
+                }
+            
+            recalculate = () => {
+
+                // Get conversion rate
+                const value = parseFloat(this.state.value)
+                if (isNaN(value)) {
+                    return
+                }
+
+                // Use cache if recent exists
+                if (this.cached[this.state.base] != undefined && Date.now() - this.cached[this.state.base].time < (60 * 1000)){
+                    this.setState({
+                        converted: this.cached[this.state.base].rates[this.state.other] * value
+                    })
+                } 
+
+                // Otherwise fetch the rates
+                else {
+
+                fetch(`https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_2UEpmhE1ptXsgh9144p61lBzhscW6STxEdf3FHZ8&currencies=AUD%2CUSD%2CNZD%2CCHF%2CGBP%2CCNY&base_currency=${this.state.base}`)
+                //fetch(`https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_2UEpmhE1ptXsgh9144p61lBzhscW6STxEdf3FHZ8&currencies=${this.state.other}&base_currency=${this.state.base}`)
+                .then(response => response.json())
+                .then(data => {
+
+                    this.cached[this.state.base] = {
+                        rates: data["data"],
+                        time: Date.now()
+                    }
+                    this.setState({
+                        converted: parseFloat(value * parseFloat(data["data"][this.state.other]))
+                    })
+                })
+            }
+        }
+
+            handleChange = (event) => {
+                this.setState({
+                    value: event.target.value,
+                    converted: null
+
+                // pass in the function as second argument
+                // to run after updating state to run asynchronously
+                }, () => {
+
+                    this.recalculate()
+
+                } )
+            }
+
+            changeCur = (event) => {
+                this.setState(state => {
+                    if (event.target.name === "base") {
+                        return {
+                            base: event.target.value,
+                            converted: null
+                        }
+                    } else {
+                        return {
+                            other: event.target.value,
+                            converted: null
+                        }
+                    }  
+                }, () => {
+                 this.recalculate()
+                })
+                
+            }
+            
+
+            render() {
+
+                //make API call to get currencies and values
+                
+                const options = this.currencies.map(c => 
+
+                        <option key={c} value={c}>{c}</option>
+
+                    )
+
+                return (
+                    <div>
+                        <h1>Exchange</h1>
+                        <select onChange={this.changeCur} name="base" value={this.state.base}>
+                            {options}
+                        </select>
+                        <input onChange={this.handleChange} value={this.state.value}/>
+                        <br/>
+                        <select onChange={this.changeCur} name="other" value={this.state.other}>
+                            {options}
+                        </select>
+                        <input value={this.state.converted === null ? "...calculating" : this.state.converted} disabled/>
+
+                    </div>
+                )
+            }
+
+            
+        }
+
+        class App extends React.Component {
+
+            render() {
+                return (
+                    <div>
+                        <Exchange />
+                    </div>
+
+
+                )
+            }
+
+        }
+
+        ReactDOM.render(<App />, document.querySelector("#app"))
+
+
+        </script>
+
+    </body>

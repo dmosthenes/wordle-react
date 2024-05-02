@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <title>Todo</title>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="text/babel">
+
+            class Todo extends React.Component {
+
+                constructor(props) {
+                    super(props);
+                    this.state = {
+                        taskList: [],
+                        input: ''
+                    }
+                }
+            
+            render() {
+
+                return(
+
+                    <div>
+
+                        <h1>Tasks</h1>
+                        <ul>
+                            {this.state.taskList.map((task, i) =>
+                                <li key={i}>
+                                    {task}
+                                    <button onClick={() => {this.removeTask(i)}}>Remove</button>
+                                </li>
+                            )}
+
+                        </ul>
+                
+                        <input onChange={this.handleInput} onKeyPress={this.handleKeyPress} value={this.state.input}/>
+                        <button onClick={this.addTask}>Add task</button>
+
+                        <h1> Number of tasks: {this.state.taskList.length} </h1>
+
+
+                    </div>
+                
+                )
+            }
+
+            handleKeyPress = (event) => {
+                if (event.key === "Enter"){
+                    this.addTask()
+                }
+            }
+
+            handleInput = (event) => {
+                this.setState({
+                    input: event.target.value
+                });
+            }
+
+            addTask = () => {
+                this.setState(state => ({
+
+                        taskList: [...state.taskList, state.input],
+                        input: ''
+
+                    })
+                )
+            }
+
+            removeTask = (index) => {
+                this.setState(state => {
+
+                    const tasks = [...state.taskList];
+
+                    // Removes 1 element from the specified index
+                    tasks.splice(index, 1);
+
+                    return {
+                        taskList: tasks
+                    }
+
+                })
+            }
+        }
+
+        class App extends React.Component {
+
+            render() {
+                return (
+                    <div>
+                        <Todo />
+                    </div>
+                )
+            }
+
+        }
+
+        ReactDOM.render(<App />, document.querySelector("#app"))
+
+
+        </script>
+
+    </body>
